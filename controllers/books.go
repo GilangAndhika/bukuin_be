@@ -2,8 +2,7 @@ package controllers
 
 import (
 	"github.com/gofiber/fiber/v2"
-	"github.com/gryzlegrizz/bukuin_be/models"
-	repo "github.com/gryzlegrizz/bukuin_be/repositories"
+	repo "github.com/gryzlegrizz/bukuin_be/repository"
 	"gorm.io/gorm"
 	"net/http"
 )

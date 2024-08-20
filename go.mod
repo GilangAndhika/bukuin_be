@@ -1,4 +1,4 @@
-module bukuin_be
+module github.com/gryzlegrizz/bukuin_be
 
 go 1.22.1
 

@@ -13,7 +13,7 @@ func GetAllBooks(c *fiber.Ctx) error {
 	db := c.Locals("db").(*gorm.DB)
 
 	// memanggil fungsi repo untuk mendapatkan semua data buku
-	books := repo.GetAllBooks(db)
+	books, err := repo.GetAllBooks(db)
 	if err != nil {
 		// jika terjadi kesalahan saat mengambil data buku, mengembalikan respon err
 		return c.Status(http.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
@@ -34,7 +34,7 @@ func GetAllBooks(c *fiber.Ctx) error {
 		"code":http.StatusOK,
 		"success":true,
 		"status": "success",
-		data : books,
+		"data" : books,
 	}
 	return c.Status(http.StatusOK).JSON(response)
 }

@@ -21,6 +21,13 @@ func SetupBooksRoute(app *fiber.App) {
 	app.Put("/books/update/:id", controllers.UpdateBook) 		// Mengatur route untuk memperbarui data buku
 	app.Delete("/books/delete/:id", controllers.DeleteBook) 	// Mengatur route untuk menghapus data buku
 
+	// Mengatur route untuk data role
+	app.Get("/roles", controllers.GetAllRoles) 					// Mengatur route untuk mengambil semua data role
+	app.Get("/roles/get/:id", controllers.GetRoleByID)			// Mengatur route untuk mengambil data role berdasarkan ID
+	app.Post("/roles/create", controllers.CreateRole) 			// Mengatur route untuk menambahkan data role
+	app.Put("/roles/update/:id", controllers.UpdateRole) 		// Mengatur route untuk memperbarui data role
+	app.Delete("/roles/delete/:id", controllers.DeleteRole) 	// Mengatur route untuk menghapus data role
+
 	// Mengatur route untuk logout
 	app.Post("/logout", controllers.LogoutUser)
 }

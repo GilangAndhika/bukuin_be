@@ -6,7 +6,7 @@ import (
 
 type Books struct {
 	IdBook      int    `gorm:"primaryKey;column:id_book" json:"id_book"`
-	IdUser	    int      `gorm:"column:id_user" json:"id_user"`
+	IdUser	    int    `gorm:"column:id_user" json:"id_user"`
 	Title       string `gorm:"column:title" json:"title"`
 	Author      string `gorm:"column:author" json:"author"`
 	Description string `gorm:"column:description" json:"description"`
@@ -16,12 +16,17 @@ type Books struct {
 }
 
 type Users struct {
-	IdUser   uint    `gorm:"primaryKey;column:id_user" json:"id_user"`
+	IdUser   uint   `gorm:"primaryKey;column:id_user" json:"id_user"`
 	IdRole   int    `gorm:"column:id_role" json:"id_role"`
 	Name     string `gorm:"column:name" json:"name"`
 	Username string `gorm:"column:username" json:"username"`
 	Password string `gorm:"column:password" json:"password"`
 	Email    string `gorm:"column:email" json:"email"`
+}
+
+type Roles struct {
+	IdRole   int    `gorm:"primaryKey;column:id_role" json:"id_role"`
+	RoleName string `gorm:"column:role_name" json:"role_name"`
 }
 
 type JWTClaims struct {

@@ -5,8 +5,8 @@ import (
 	"gorm.io/gorm"
 )
 
-func GetAllBooks(db *gorm.DB) ([]models.Books, error) {
-	var nbooks []models.Books
+func GetAllBooks(db *gorm.DB) ([]models.GetJoinBooks, error) {
+	var nbooks []models.GetJoinBooks
 	// Mengambil semua data buku dari database
 	if err := db.
 		Table("books").

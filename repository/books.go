@@ -33,7 +33,7 @@ func CreateBook(db *gorm.DB, book models.Books) error {
 
 func UpdateBook(db *gorm.DB, id string, UpdatedBooks models.Books) error {
 	// Memperbarui data buku di database
-	if err := db.Model(&models.Books{}).Where("id_user = ?", id).Updates(UpdatedBooks).Error; err != nil {
+	if err := db.Model(&models.Books{}).Where("id_book = ?", id).Updates(UpdatedBooks).Error; err != nil {
 		return err
 	}
 	return nil

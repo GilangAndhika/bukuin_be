@@ -95,7 +95,7 @@ func CreateBook(c *fiber.Ctx) error {
 
 func UpdateBook(c *fiber.Ctx) error {
 	// mendapatkan parameter ID dari URL
-	id := c.Params("id_user")
+	id := c.Params("id_book")
 	if id == "" {
 		return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error": "ID is not found"})
 	}
@@ -128,7 +128,7 @@ func UpdateBook(c *fiber.Ctx) error {
 
 func DeleteBook(c *fiber.Ctx) error {
 	// mendapatkan parameter ID dari URL
-	id := c.Params("id_user")
+	id := c.Params("id_book")
 	if id == "" {
 		return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error": "ID is not found"})
 	}

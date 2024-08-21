@@ -28,6 +28,15 @@ func GetBookByID(db *gorm.DB, id string) (models.Books, error) {
 	return books, nil
 }
 
+func GetBookByIdUser(db *gorm.DB, IdUser int) ([]models.Books, error) {
+	var books []models.Books
+	// Mengambil data buku berdasarkan ID
+	if err := db.Where("id_user = ?", IdUser).Find(&books).Error; err != nil {
+		return nil, err
+	}
+	return books, nil
+}
+
 func CreateBook(db *gorm.DB, book *models.Books) error {
 	// Menambahkan data buku ke database
 	if err := db.Create(&book).Error; err != nil {

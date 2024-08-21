@@ -52,6 +52,7 @@ func GetUserByID(db *gorm.DB, IdUser uint) (*models.Users, error) {
 func CreateToken(user *models.Users) (string, error) {
 	claims := &models.JWTClaims{
 		IdUser: user.IdUser,
+		IdRole: user.IdRole,
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: time.Now().Add(time.Hour).Unix(), // token kadaluarsa dalam 1 jam
 		},

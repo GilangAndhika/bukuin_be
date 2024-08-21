@@ -1,11 +1,13 @@
 package controllers
 
 import (
+	"net/http"
+
+	"github.com/dgrijalva/jwt-go"
 	"github.com/gofiber/fiber/v2"
+	"github.com/gryzlegrizz/bukuin_be/models"
 	repo "github.com/gryzlegrizz/bukuin_be/repository"
 	"gorm.io/gorm"
-	"net/http"
-	"github.com/gryzlegrizz/bukuin_be/models"
 )
 
 func GetAllBooks(c *fiber.Ctx) error {
@@ -77,12 +79,67 @@ func GetBookByID(c *fiber.Ctx) error {
 	})
 }
 
-func CreateBook(c *fiber.Ctx) error {
+func GetBookByIdUser(c *fiber.Ctx) error {
 	// cek autentikasi token header
-	token := c.Get("login")
-	if token == "" {
+	tokenStr := c.Get("login")
+	if tokenStr == "" {
 		return fiber.NewError(fiber.StatusBadRequest, "Header is not found")
 	}
+
+	// parse token untuk mendapatkan id user
+	token, err := jwt.ParseWithClaims(tokenStr, &models.JWTClaims{}, func(token *jwt.Token) (interface{}, error) {
+		return []byte("secret_key"), nil
+	})
+	if err != nil {
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "Invalid token"})
+	}
+
+	claims, ok := token.Claims.(*models.JWTClaims)
+	if !ok || !token.Valid {
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "Invalid token"})
+	}
+
+	IdUser := claims.IdUser
+
+	db := c.Locals("db").(*gorm.DB)
+
+	// memanggil fungsi repo untuk mendapatkan data buku berdasarkan ID user
+	books, err := repo.GetBookByIdUser(db, int(IdUser))
+	if err != nil {
+		// jika terjadi kesalahan saat mengambil data buku, mengembalikan respon err
+		return c.Status(http.StatusInternalServerError).JSON(fiber.Map{"error": "Data not found"})
+	}
+
+	// jika tidak ada kesalahan, mengembalikan data books sebagai respons JSON
+	return c.JSON(fiber.Map{
+		"code":http.StatusOK,
+		"success":true,
+		"status": "success",
+		"data" : books,
+	})
+}
+
+func CreateBook(c *fiber.Ctx) error {
+	// cek autentikasi token header
+	tokenStr := c.Get("login")
+	if tokenStr == "" {
+		return fiber.NewError(fiber.StatusBadRequest, "Header is not found")
+	}
+
+	// parse token untuk mendapatkan id user
+	token, err := jwt.ParseWithClaims(tokenStr, &models.JWTClaims{}, func(token *jwt.Token) (interface{}, error) {
+		return []byte("secret_key"), nil 
+	})
+	if err != nil {
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "Invalid token"})
+	}
+
+	claims, ok := token.Claims.(*models.JWTClaims)
+	if !ok || !token.Valid {
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "Invalid token"})
+	}
+
+	IdUser := claims.IdUser
 
 	// mendeklarasikan variabel untuk menyimpan data book dari body request
 	var books models.Books
@@ -91,6 +148,8 @@ func CreateBook(c *fiber.Ctx) error {
 	if err := c.BodyParser(&books); err != nil {
 		return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error": "Failed to process request"})
 	}
+
+	books.IdUser = int(IdUser)
 
 	// mendapatkan koneksi database dari cotext fiber
 	db := c.Locals("db").(*gorm.DB)
@@ -115,7 +174,7 @@ func UpdateBook(c *fiber.Ctx) error {
 	// cek autentikasi token header
 	token := c.Get("login")
 	if token == "" {
-		return fiber.NewError(fiber.StatusBadRequest, "Header is not found")
+		return fiber.NewError(http.StatusBadRequest, "Header is not found")
 	}
 
 	// mendapatkan parameter ID dari URL

@@ -16,6 +16,7 @@ func SetupBooksRoute(app *fiber.App) {
 	// Mengatur route untuk data buku
 	app.Get("/books", controllers.GetAllBooks) 						// Mengatur route untuk mengambil semua data buku
 	app.Get("/books/get", controllers.GetBookByID)					// Mengatur route untuk mengambil data buku berdasarkan ID
+	app.Get("/books/bookuser", controllers.GetBookByIdUser)			// Mengatur route untuk mengambil data buku berdasarkan user
 	app.Post("/books/create", controllers.CreateBook) 				// Mengatur route untuk menambahkan data buku
 	app.Put("/books/update", controllers.UpdateBook) 				// Mengatur route untuk memperbarui data buku
 	app.Delete("/books/delete", controllers.DeleteBook) 			// Mengatur route untuk menghapus data buku

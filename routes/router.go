@@ -6,14 +6,21 @@ import (
 )
 
 func SetupBooksRoute(app *fiber.App) {
-	// Mengatur route untuk mengambil semua data buku
-	app.Get("/books", controllers.GetAllBooks)
-	// Mengatur route untuk mengambil data buku berdasarkan ID
-	app.Get("/books/get/:id", controllers.GetBookByID)
-	// Mengatur route untuk menambahkan data buku
-	app.Post("/books/create", controllers.CreateBook)
-	// Mengatur route untuk memperbarui data buku
-	app.Put("/books/update/:id", controllers.UpdateBook)
-	// Mengatur route untuk menghapus data buku
-	app.Delete("/books/delete/:id", controllers.DeleteBook)
+	// Mengatur route untuk Login dan Register
+	app.Post("/register", controllers.RegisterUser)
+	app.Post("/login", controllers.LoginUser)
+
+	// Mengatur route untuk authentikasi
+	app.Use(controllers.Authenticate)
+	app.Get("/auth", controllers.GetUser)
+
+	// Mengatur route untuk data buku
+	app.Get("/books", controllers.GetAllBooks) 					// Mengatur route untuk mengambil semua data buku
+	app.Get("/books/get/:id", controllers.GetBookByID)			// Mengatur route untuk mengambil data buku berdasarkan ID
+	app.Post("/books/create", controllers.CreateBook) 			// Mengatur route untuk menambahkan data buku
+	app.Put("/books/update/:id", controllers.UpdateBook) 		// Mengatur route untuk memperbarui data buku
+	app.Delete("/books/delete/:id", controllers.DeleteBook) 	// Mengatur route untuk menghapus data buku
+
+	// Mengatur route untuk logout
+	app.Post("/logout", controllers.LogoutUser)
 }

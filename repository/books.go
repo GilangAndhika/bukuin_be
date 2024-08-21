@@ -6,12 +6,17 @@ import (
 )
 
 func GetAllBooks(db *gorm.DB) ([]models.Books, error) {
-	var books []models.Books
+	var nbooks []models.Books
 	// Mengambil semua data buku dari database
-	if err := db.Find(&books).Error; err != nil {
+	if err := db.
+		Table("books").
+		Select("books.id_book, books.title, books.author, books.description, books.launch_year, books.isbn, books.cover_image_url").
+		Joins("JOIN users ON books.id_user = users.id_user").
+		Find(&nbooks).
+		Error; err != nil {
 		return nil, err
 	}
-	return books, nil
+	return nbooks, nil
 }
 
 func GetBookByID(db *gorm.DB, id string) (models.Books, error) {

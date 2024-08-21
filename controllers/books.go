@@ -9,6 +9,12 @@ import (
 )
 
 func GetAllBooks(c *fiber.Ctx) error {
+	// cek autentikasi token header
+	token := c.Get("login")
+	if token == "" {
+		return fiber.NewError(fiber.StatusBadRequest, "Header is not found")
+	}
+
 	// mendapatkan koneksi database dari cotext fiber
 	db := c.Locals("db").(*gorm.DB)
 
@@ -16,7 +22,7 @@ func GetAllBooks(c *fiber.Ctx) error {
 	books, err := repo.GetAllBooks(db)
 	if err != nil {
 		// jika terjadi kesalahan saat mengambil data buku, mengembalikan respon err
-		return c.Status(http.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
+		return c.Status(http.StatusInternalServerError).JSON(fiber.Map{"error": "Failed to get books data"})
 	}
 
 	// jika tidak ada data buku yang ditemukan, mengembalikan respon not found
@@ -40,10 +46,16 @@ func GetAllBooks(c *fiber.Ctx) error {
 }
 
 func GetBookByID(c *fiber.Ctx) error {
+	// cek autentikasi token header
+	token := c.Get("login")
+	if token == "" {
+		return fiber.NewError(fiber.StatusBadRequest, "Header is not found")
+	}
+
 	// mendapatkan parameter ID dari URL
-	id := c.Params("id_book")
+	id := c.Query("id_book")
 	if id == "" {
-		return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error": "ID is not found"})
+		return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error": "ID book cannot be empty"})
 	}
 
 	// mendapatkan koneksi database dari cotext fiber
@@ -53,7 +65,7 @@ func GetBookByID(c *fiber.Ctx) error {
 	books, err := repo.GetBookByID(db, id)
 	if err != nil {
 		// Jika terjadi kesalahan, mengembalikan respons error
-		return c.Status(http.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
+		return c.Status(http.StatusInternalServerError).JSON(fiber.Map{"error": "Data not found"})
 	} 
 	
 	// jika tidak ada kesalahan, mengembalikan data book sebagai respons JSON
@@ -66,6 +78,12 @@ func GetBookByID(c *fiber.Ctx) error {
 }
 
 func CreateBook(c *fiber.Ctx) error {
+	// cek autentikasi token header
+	token := c.Get("login")
+	if token == "" {
+		return fiber.NewError(fiber.StatusBadRequest, "Header is not found")
+	}
+
 	// mendeklarasikan variabel untuk menyimpan data book dari body request
 	var books models.Books
 
@@ -78,7 +96,7 @@ func CreateBook(c *fiber.Ctx) error {
 	db := c.Locals("db").(*gorm.DB)
 
 	// memanggil fungsi repo untuk menambahkan data buku ke database
-	if err := repo.CreateBook(db, books); err != nil {
+	if err := repo.CreateBook(db, &books); err != nil {
 		// jika terjadi kesalahan saat menambahkan data buku, mengembalikan respon err
 		return c.Status(http.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
 	}
@@ -94,10 +112,16 @@ func CreateBook(c *fiber.Ctx) error {
 }
 
 func UpdateBook(c *fiber.Ctx) error {
+	// cek autentikasi token header
+	token := c.Get("login")
+	if token == "" {
+		return fiber.NewError(fiber.StatusBadRequest, "Header is not found")
+	}
+
 	// mendapatkan parameter ID dari URL
-	id := c.Params("id_book")
+	id := c.Query("id_book")
 	if id == "" {
-		return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error": "ID is not found"})
+		return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error": "ID book is not found"})
 	}
 
 	// mendeklarasikan variabel untuk menyimpan data books yang diperbarui dari body request
@@ -110,6 +134,13 @@ func UpdateBook(c *fiber.Ctx) error {
 
 	// mendapatkan koneksi database dari cotext fiber
 	db := c.Locals("db").(*gorm.DB)
+
+	// Memanggil fungsi repo untuk cek data buku berdasarkan ID
+	_, err := repo.GetBookByID(db, id)
+	if err != nil {
+		// Jika terjadi kesalahan, mengembalikan respons error
+		return c.Status(http.StatusNotFound).JSON(fiber.Map{"error": "ID book is not found"})
+	}
 
 	// Memanggil fungsi repo untuk memperbarui data buku di dalam database
 	if err := repo.UpdateBook(db, id, UpdatedBooks); err != nil {
@@ -127,14 +158,27 @@ func UpdateBook(c *fiber.Ctx) error {
 }
 
 func DeleteBook(c *fiber.Ctx) error {
+	// cek autentikasi token header
+	token := c.Get("login")
+	if token == "" {
+		return fiber.NewError(fiber.StatusBadRequest, "Header is not found")
+	}
+
 	// mendapatkan parameter ID dari URL
-	id := c.Params("id_book")
+	id := c.Query("id_book")
 	if id == "" {
-		return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error": "ID is not found"})
+		return c.Status(http.StatusBadRequest).JSON(fiber.Map{"error": "ID cannot be empty"})
 	}
 
 	// mendapatkan koneksi database dari cotext fiber
 	db := c.Locals("db").(*gorm.DB)
+
+	// Memanggil fungsi repo untuk cek data buku berdasarkan ID
+	_, err := repo.GetBookByID(db, id)
+	if err != nil {
+		// Jika terjadi kesalahan, mengembalikan respons error
+		return c.Status(http.StatusNotFound).JSON(fiber.Map{"error": "ID book is not found"})
+	}
 
 	// Memanggil fungsi repo untuk menghapus data buku dari database
 	if err := repo.DeleteBook(db, id); err != nil {

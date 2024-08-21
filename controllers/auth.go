@@ -76,69 +76,37 @@ func LoginUser(c *fiber.Ctx) error {
 }
 
 func GetUser(c *fiber.Ctx) error {
-	// mendapatkan data user yang sedang login melalui JWT token
-	user := c.Locals("user").(*jwt.Token)
-	claims := user.Claims.(*models.JWTClaims)
-	db := c.Locals("db").(*gorm.DB)
-
-	// mencari user berdasarkan ID menggunakan repo
-	userData, err := repo.GetUserByID(db, claims.IdUser)
-	if err != nil {
-		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
-			"message": "User not found",
-		})
+	// mendapatkan token JWT dari header Authorization
+	tokenString := c.Get("login")
+	if tokenString == "" {
+		return fiber.NewError(fiber.StatusNotFound, "Token not found in header")
 	}
 
-	return c.JSON(fiber.Map{
-		"data":    userData,
-	})
-}
-
-func Authenticate(c *fiber.Ctx) error {
-	// mendapatkan token dari header authorization
-	authHeader := c.Get("Authorization")
-	token := ""
-	if len(authHeader) > 7 && authHeader[:7] == "Bearer" {
-		token = authHeader[7:]
-	} else {
-		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
-			"message": "Wrong authorization header",
-		})
-	}
-
-	// verifikasi token
-	claims := new(models.JWTClaims)
-	tkn, err := jwt.ParseWithClaims(token, claims, func(t *jwt.Token) (interface{}, error) {
+	// parse token JWT
+	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		return []byte("secret_key"), nil
 	})
 	if err != nil {
-		if err == jwt.ErrSignatureInvalid {
-			return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
-				"message": "Invalid token signature",
-			})
-		}
-		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
-			"message": "Authentication token failed",
-		})
+		return err
 	}
 
-	if !tkn.Valid {
-		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
-			"message": "Invalid token",
-		})
+	// memeriksa apakah token valid
+	if !token.Valid {
+		return fiber.NewError(fiber.StatusBadRequest, "Invalid token")
 	}
 
-	// menyimpan data user ke context fiber
-	c.Locals("user", tkn)
+	// mengekstrak klaim dari token
+	claims := token.Claims.(jwt.MapClaims)
+	IdUser := uint(claims["id_user"].(float64))
+	db := c.Locals("db").(*gorm.DB)
 
-	return c.Next()
-}
-
-func LogoutUser(c *fiber.Ctx) error {
-	// menghapus token dari authorization header
-	c.Set("Authorization", "")
+	// mencari user berdasarkan ID menggunakan repo
+	userData, err := repo.GetUserByID(db, IdUser)
+	if err != nil {
+		return err
+	}
 
 	return c.JSON(fiber.Map{
-		"message": "Logout success",
+		"user": userData,
 	})
 }

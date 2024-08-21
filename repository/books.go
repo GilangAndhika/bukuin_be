@@ -23,7 +23,7 @@ func GetBookByID(db *gorm.DB, id string) (models.Books, error) {
 	return books, nil
 }
 
-func CreateBook(db *gorm.DB, book models.Books) error {
+func CreateBook(db *gorm.DB, book *models.Books) error {
 	// Menambahkan data buku ke database
 	if err := db.Create(&book).Error; err != nil {
 		return err

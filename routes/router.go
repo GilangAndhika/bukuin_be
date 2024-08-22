@@ -9,6 +9,7 @@ func SetupBooksRoute(app *fiber.App) {
 	// Mengatur route untuk Login dan Register
 	app.Post("/register", controllers.RegisterUser)
 	app.Post("/login", controllers.LoginUser)
+	app.Get("/checkusername", controllers.CheckUsername)
 
 	// Mengatur route untuk authentikasi
 	app.Get("/auth", controllers.GetUser)

@@ -1,11 +1,11 @@
 package main
 
 import (
+	"github.com/GilangAndhika/bukuin_be/config"
+	"github.com/GilangAndhika/bukuin_be/routes"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/logger"
-	"github.com/gryzlegrizz/bukuin_be/config"
-	"github.com/gryzlegrizz/bukuin_be/routes"
 )
 
 func main() {

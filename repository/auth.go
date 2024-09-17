@@ -1,11 +1,12 @@
 package repository
 
 import (
+	"time"
+
+	"github.com/GilangAndhika/bukuin_be/models"
 	"github.com/dgrijalva/jwt-go"
-	"github.com/gryzlegrizz/bukuin_be/models"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
-	"time"
 )
 
 func CreateUser(db *gorm.DB, user *models.Users) error {
@@ -16,7 +17,7 @@ func CreateUser(db *gorm.DB, user *models.Users) error {
 	}
 	user.Password = string(hashedPassword)
 
-	// jika role tidak diisi, atur nilainya ke 2 
+	// jika role tidak diisi, atur nilainya ke 2
 	if user.IdRole == 0 {
 		user.IdRole = 2
 	}

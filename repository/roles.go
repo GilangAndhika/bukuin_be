@@ -1,7 +1,7 @@
 package repository
 
 import (
-	"github.com/gryzlegrizz/bukuin_be/models"
+	"github.com/GilangAndhika/bukuin_be/models"
 	"gorm.io/gorm"
 )
 

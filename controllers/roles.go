@@ -1,11 +1,12 @@
 package controllers
 
 import (
-	"github.com/gofiber/fiber/v2"
-	"github.com/gryzlegrizz/bukuin_be/models"
-	repo "github.com/gryzlegrizz/bukuin_be/repository"
-	"gorm.io/gorm"
 	"net/http"
+
+	"github.com/GilangAndhika/bukuin_be/models"
+	repo "github.com/GilangAndhika/bukuin_be/repository"
+	"github.com/gofiber/fiber/v2"
+	"gorm.io/gorm"
 )
 
 func GetAllRoles(c *fiber.Ctx) error {
@@ -22,19 +23,19 @@ func GetAllRoles(c *fiber.Ctx) error {
 	// jika tidak ada data role yang ditemukan, mengembalikan respon not found
 	if len(roles) == 0 {
 		return c.Status(http.StatusNotFound).JSON(fiber.Map{
-			"code":http.StatusNotFound,
-			"success":false,
-			"status": "error",
+			"code":    http.StatusNotFound,
+			"success": false,
+			"status":  "error",
 			"message": "No roles found",
-			"data": nil,})
+			"data":    nil})
 	}
 
 	// jika tidak ada kesalahan, mengembalikan data roles sebagai respons JSON
 	response := fiber.Map{
-		"code":http.StatusOK,
-		"success":true,
-		"status": "success",
-		"data" : roles,
+		"code":    http.StatusOK,
+		"success": true,
+		"status":  "success",
+		"data":    roles,
 	}
 
 	return c.Status(http.StatusOK).JSON(response)
@@ -59,10 +60,10 @@ func GetRoleByID(c *fiber.Ctx) error {
 
 	// jika tidak ada kesalahan, mengembalikan data role sebagai respons JSON
 	return c.JSON(fiber.Map{
-		"code":http.StatusOK,
-		"success":true,
-		"status": "success",
-		"data" : role,
+		"code":    http.StatusOK,
+		"success": true,
+		"status":  "success",
+		"data":    role,
 	})
 }
 
@@ -87,11 +88,11 @@ func CreateRole(c *fiber.Ctx) error {
 
 	// jika tidak ada kesalahan, mengembalikan respon sukses
 	return c.Status(http.StatusCreated).JSON(fiber.Map{
-		"code":http.StatusCreated,
-		"success":true,
-		"status": "success",
+		"code":    http.StatusCreated,
+		"success": true,
+		"status":  "success",
 		"message": "Role created successfully",
-		"data": role,
+		"data":    role,
 	})
 }
 
@@ -122,9 +123,9 @@ func UpdateRole(c *fiber.Ctx) error {
 
 	// jika tidak ada kesalahan, mengembalikan respon sukses
 	return c.Status(http.StatusOK).JSON(fiber.Map{
-		"code":http.StatusOK,
-		"success":true,
-		"status": "success",
+		"code":    http.StatusOK,
+		"success": true,
+		"status":  "success",
 		"message": "Role updated successfully",
 	})
 }
@@ -147,10 +148,10 @@ func DeleteRole(c *fiber.Ctx) error {
 
 	// jika tidak ada kesalahan, mengembalikan respon sukses
 	return c.Status(http.StatusOK).JSON(fiber.Map{
-		"code":http.StatusOK,
-		"success":true,
-		"status": "success",
-		"message": "Role deleted successfully",
+		"code":       http.StatusOK,
+		"success":    true,
+		"status":     "success",
+		"message":    "Role deleted successfully",
 		"deleted_id": id,
 	})
 }

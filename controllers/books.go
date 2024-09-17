@@ -3,10 +3,10 @@ package controllers
 import (
 	"net/http"
 
+	"github.com/GilangAndhika/bukuin_be/models"
+	repo "github.com/GilangAndhika/bukuin_be/repository"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gofiber/fiber/v2"
-	"github.com/gryzlegrizz/bukuin_be/models"
-	repo "github.com/gryzlegrizz/bukuin_be/repository"
 	"gorm.io/gorm"
 )
 
@@ -30,19 +30,19 @@ func GetAllBooks(c *fiber.Ctx) error {
 	// jika tidak ada data buku yang ditemukan, mengembalikan respon not found
 	if len(books) == 0 {
 		return c.Status(http.StatusNotFound).JSON(fiber.Map{
-			"code":http.StatusNotFound,
-			"success":false,
-			"status": "error",
+			"code":    http.StatusNotFound,
+			"success": false,
+			"status":  "error",
 			"message": "No books found",
-			"data": nil,})
+			"data":    nil})
 	}
 
 	// jika tidak ada kesalahan, mengembalikan data books sebagai respons JSON
 	response := fiber.Map{
-		"code":http.StatusOK,
-		"success":true,
-		"status": "success",
-		"data" : books,
+		"code":    http.StatusOK,
+		"success": true,
+		"status":  "success",
+		"data":    books,
 	}
 	return c.Status(http.StatusOK).JSON(response)
 }
@@ -68,14 +68,14 @@ func GetBookByID(c *fiber.Ctx) error {
 	if err != nil {
 		// Jika terjadi kesalahan, mengembalikan respons error
 		return c.Status(http.StatusInternalServerError).JSON(fiber.Map{"error": "Data not found"})
-	} 
-	
+	}
+
 	// jika tidak ada kesalahan, mengembalikan data book sebagai respons JSON
 	return c.JSON(fiber.Map{
-		"code":http.StatusOK,
-		"success":true,
-		"status": "success",
-		"data" : books,
+		"code":    http.StatusOK,
+		"success": true,
+		"status":  "success",
+		"data":    books,
 	})
 }
 
@@ -112,10 +112,10 @@ func GetBookByIdUser(c *fiber.Ctx) error {
 
 	// jika tidak ada kesalahan, mengembalikan data books sebagai respons JSON
 	return c.JSON(fiber.Map{
-		"code":http.StatusOK,
-		"success":true,
-		"status": "success",
-		"data" : books,
+		"code":    http.StatusOK,
+		"success": true,
+		"status":  "success",
+		"data":    books,
 	})
 }
 
@@ -128,7 +128,7 @@ func CreateBook(c *fiber.Ctx) error {
 
 	// parse token untuk mendapatkan id user
 	token, err := jwt.ParseWithClaims(tokenStr, &models.JWTClaims{}, func(token *jwt.Token) (interface{}, error) {
-		return []byte("secret_key"), nil 
+		return []byte("secret_key"), nil
 	})
 	if err != nil {
 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "Invalid token"})
@@ -162,11 +162,11 @@ func CreateBook(c *fiber.Ctx) error {
 
 	// jika tidak ada kesalahan, mengembalikan respon sukses
 	return c.Status(http.StatusCreated).JSON(fiber.Map{
-		"code":http.StatusCreated,
-		"success":true,
-		"status": "success",
+		"code":    http.StatusCreated,
+		"success": true,
+		"status":  "success",
 		"message": "Book created successfully",
-		"data": books,
+		"data":    books,
 	})
 }
 
@@ -209,9 +209,9 @@ func UpdateBook(c *fiber.Ctx) error {
 
 	// jika tidak ada kesalahan, mengembalikan respon sukses
 	return c.Status(http.StatusOK).JSON(fiber.Map{
-		"code":http.StatusOK,
-		"success":true,
-		"status": "success",
+		"code":    http.StatusOK,
+		"success": true,
+		"status":  "success",
 		"message": "Book updated successfully",
 	})
 }
@@ -247,10 +247,10 @@ func DeleteBook(c *fiber.Ctx) error {
 
 	// jika tidak ada kesalahan, mengembalikan respon sukses
 	return c.Status(http.StatusOK).JSON(fiber.Map{
-		"code":http.StatusOK,
-		"success":true,
-		"status": "success",
-		"message": "Book deleted successfully",
+		"code":       http.StatusOK,
+		"success":    true,
+		"status":     "success",
+		"message":    "Book deleted successfully",
 		"deleted_id": id,
 	})
 }

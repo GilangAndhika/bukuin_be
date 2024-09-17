@@ -1,10 +1,10 @@
 package controllers
 
 import (
+	"github.com/GilangAndhika/bukuin_be/models"
+	repo "github.com/GilangAndhika/bukuin_be/repository"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gofiber/fiber/v2"
-	"github.com/gryzlegrizz/bukuin_be/models"
-	repo "github.com/gryzlegrizz/bukuin_be/repository"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 )
